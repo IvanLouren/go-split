@@ -70,6 +70,17 @@ func (h *Handler) CreateExpense(w http.ResponseWriter, r *http.Request) {
 		splits = append(splits, SplitInput{UserID: splitUserID, Amount: s.Amount})
 	}
 
+	const epsilon = 0.01 // to validate splits add up to total
+	var total float64
+	for _, s := range splits {
+		total += s.Amount
+	}
+	diff := total - req.Amount
+	if diff < -epsilon || diff > epsilon {
+		http.Error(w, "splits must add up to total amount", http.StatusBadRequest)
+		return
+	}
+
 	expense, err := h.service.CreateExpense(groupID, parsedID, req.Description, req.Amount, splits)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
