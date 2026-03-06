@@ -107,6 +107,11 @@ func TestGetGroups(t *testing.T) {
 		t.Fatalf("failed to insert group: %s", err)
 	}
 
+	_, err = testDB.Exec(`INSERT INTO group_members (group_id, user_id) VALUES ($1, $2)`, groupID, userID) // insert a member so that GetGroups can find it
+	if err != nil {
+		t.Fatalf("failed to insert group member: %s", err)
+	}
+
 	parsedUserID, err := uuid.Parse(userID)
 	if err != nil {
 		t.Fatalf("failed to parse userID: %s", err)
