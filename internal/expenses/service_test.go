@@ -62,7 +62,7 @@ func runMigrations(db *sql.DB) error {
 func TestCreateExpense(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User", "test@test.com", "hashedpassword").Scan(&userID)
+		"User 1", "user1@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -116,7 +116,7 @@ func TestCreateExpense(t *testing.T) {
 func TestGetExpenses(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 2", "test2@test.com", "hashedpassword").Scan(&userID)
+		"User 2", "user2@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -166,7 +166,7 @@ func TestGetExpenses(t *testing.T) {
 func TestGetExpense(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 3", "test3@test.com", "hashedpassword").Scan(&userID)
+		"User 3", "user3@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -206,7 +206,7 @@ func TestGetExpense(t *testing.T) {
 func TestDeleteExpense(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 4", "test4@test.com", "hashedpassword").Scan(&userID)
+		"User 4", "user4@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}

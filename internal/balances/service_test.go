@@ -62,7 +62,7 @@ func runMigrations(db *sql.DB) error {
 func TestGetBalances(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User", "test@test.com", "hashedpassword").Scan(&userID)
+		"User 1", "user1@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -83,7 +83,7 @@ func TestGetBalances(t *testing.T) {
 
 	var user2ID string
 	err = testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"User2", "user2@test.com", "hashedpassword").Scan(&user2ID)
+		"User 2", "user2@test.com", "hashedpassword").Scan(&user2ID)
 	if err != nil {
 		t.Fatalf("failed to insert user2: %s", err)
 	}

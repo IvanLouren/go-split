@@ -62,7 +62,7 @@ func runMigrations(db *sql.DB) error {
 func TestCreateGroup(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User", "test@test.com", "hashedpassword").Scan(&userID)
+		"User 1", "user1@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -95,7 +95,7 @@ func TestCreateGroup(t *testing.T) {
 func TestGetGroups(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User", "test2@test.com", "hashedpassword").Scan(&userID)
+		"User 2", "user2@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -134,7 +134,7 @@ func TestGetGroups(t *testing.T) {
 func TestGetGroup(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 3", "test3@test.com", "hashedpassword").Scan(&userID)
+		"User 3", "user3@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -168,7 +168,7 @@ func TestGetGroup(t *testing.T) {
 func TestUpdateGroup(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 4", "test4@test.com", "hashedpassword").Scan(&userID)
+		"User 4", "user4@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -202,7 +202,7 @@ func TestUpdateGroup(t *testing.T) {
 func TestDeleteGroup(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 5", "test5@test.com", "hashedpassword").Scan(&userID)
+		"User 5", "user5@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -232,13 +232,13 @@ func TestDeleteGroup(t *testing.T) {
 func TestAddMember(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 6", "test6@test.com", "hashedpassword").Scan(&userID)
+		"User 6", "user6@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
 	var memberID string
 	err = testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 7", "test7@test.com", "hashedpassword").Scan(&memberID)
+		"User 7", "user7@test.com", "hashedpassword").Scan(&memberID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
@@ -279,13 +279,13 @@ func TestAddMember(t *testing.T) {
 func TestRemoveMember(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 8", "test8@test.com", "hashedpassword").Scan(&userID)
+		"User 8", "user8@test.com", "hashedpassword").Scan(&userID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}
 	var memberID string
 	err = testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"Test User 9", "test9@test.com", "hashedpassword").Scan(&memberID)
+		"User 9", "user9@test.com", "hashedpassword").Scan(&memberID)
 	if err != nil {
 		t.Fatalf("failed to insert user: %s", err)
 	}

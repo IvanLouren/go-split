@@ -62,14 +62,14 @@ func runMigrations(db *sql.DB) error {
 func TestCreateSettlement(t *testing.T) {
 	var paidByID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"User1", "user1@test.com", "hashedpassword").Scan(&paidByID)
+		"User 1", "user1@test.com", "hashedpassword").Scan(&paidByID)
 	if err != nil {
 		t.Fatalf("failed to insert paidBy user: %s", err)
 	}
 
 	var paidToID string
 	err = testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"User2", "user2@test.com", "hashedpassword").Scan(&paidToID)
+		"User 2", "user2@test.com", "hashedpassword").Scan(&paidToID)
 	if err != nil {
 		t.Fatalf("failed to insert paidTo user: %s", err)
 	}
@@ -122,14 +122,14 @@ func TestCreateSettlement(t *testing.T) {
 func TestGetSettlements(t *testing.T) {
 	var paidByID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"User3", "user3@test.com", "hashedpassword").Scan(&paidByID)
+		"User 3", "user3@test.com", "hashedpassword").Scan(&paidByID)
 	if err != nil {
 		t.Fatalf("failed to insert paidBy user: %s", err)
 	}
 
 	var paidToID string
 	err = testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
-		"User4", "user4@test.com", "hashedpassword").Scan(&paidToID)
+		"User 4", "user4@test.com", "hashedpassword").Scan(&paidToID)
 	if err != nil {
 		t.Fatalf("failed to insert paidTo user: %s", err)
 	}
