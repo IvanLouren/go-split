@@ -22,6 +22,19 @@ type CreateSettlementRequest struct {
 	Amount float64 `json:"amount"`
 }
 
+// CreateSettlement godoc
+// @Summary      Record a settlement between two users
+// @Tags         settlements
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id    path      string                   true  "Group ID"
+// @Param        body  body      CreateSettlementRequest  true  "Settlement data"
+// @Success      201   {object}  models.Settlement
+// @Failure      400   {string}  string  "invalid request"
+// @Failure      401   {string}  string  "unauthorized"
+// @Failure      500   {string}  string  "internal error"
+// @Router       /api/groups/{id}/settlements [post]
 func (h *Handler) CreateSettlement(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
 
@@ -71,6 +84,17 @@ func (h *Handler) CreateSettlement(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(settlement)
 }
 
+// GetSettlements godoc
+// @Summary      List all settlements in a group
+// @Tags         settlements
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      string  true  "Group ID"
+// @Success      200  {array}   models.Settlement
+// @Failure      400  {string}  string  "invalid group ID"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id}/settlements [get]
 func (h *Handler) GetSettlements(w http.ResponseWriter, r *http.Request) {
 	groupIDStr := r.PathValue("id")
 	groupID, err := uuid.Parse(groupIDStr)

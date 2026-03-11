@@ -1,3 +1,14 @@
+// @title           GoSplit API
+// @version         1.0
+// @description     A Splitwise-like expense splitting REST API.
+
+// @host      localhost:8080
+// @BasePath  /
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+
 package main
 
 import (
@@ -5,6 +16,7 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/IvanLouren/GoSplit/docs"
 	"github.com/IvanLouren/GoSplit/internal/auth"
 	"github.com/IvanLouren/GoSplit/internal/balances"
 	"github.com/IvanLouren/GoSplit/internal/expenses"
@@ -13,6 +25,7 @@ import (
 	"github.com/IvanLouren/GoSplit/pkg/database"
 	"github.com/IvanLouren/GoSplit/pkg/middleware"
 	"github.com/joho/godotenv"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func main() {
@@ -73,6 +86,9 @@ func main() {
 
 	// balance routes
 	mux.Handle("GET /api/groups/{id}/balances", middleware.AuthRequired(http.HandlerFunc(balanceHandler.GetBalances)))
+
+	// swagger UI
+	mux.Handle("GET /swagger/", httpSwagger.WrapHandler)
 
 	port := os.Getenv("APP_PORT")
 	if port == "" {

@@ -26,6 +26,18 @@ type AddMemberRequest struct {
 	UserID string `json:"user_id"`
 }
 
+// CreateGroup godoc
+// @Summary      Create a new group
+// @Tags         groups
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        body  body      CreateGroupRequest  true  "Group name"
+// @Success      201   {object}  models.Group
+// @Failure      400   {string}  string  "invalid request body"
+// @Failure      401   {string}  string  "unauthorized"
+// @Failure      500   {string}  string  "internal error"
+// @Router       /api/groups [post]
 func (h *Handler) CreateGroup(w http.ResponseWriter, r *http.Request) {
 
 	userID := middleware.GetUserID(r)
@@ -51,6 +63,15 @@ func (h *Handler) CreateGroup(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(group)
 }
 
+// GetGroups godoc
+// @Summary      List all groups for the current user
+// @Tags         groups
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {array}   models.Group
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups [get]
 func (h *Handler) GetGroups(w http.ResponseWriter, r *http.Request) {
 
 	userID := middleware.GetUserID(r)
@@ -75,6 +96,18 @@ func (h *Handler) GetGroups(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(groups)
 }
 
+// GetGroup godoc
+// @Summary      Get a group by ID
+// @Tags         groups
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      string  true  "Group ID"
+// @Success      200  {object}  models.Group
+// @Failure      400  {string}  string  "invalid group ID"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      404  {string}  string  "group not found"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id} [get]
 func (h *Handler) GetGroup(w http.ResponseWriter, r *http.Request) {
 
 	groupIDStr := r.PathValue("id")
@@ -101,6 +134,20 @@ func (h *Handler) GetGroup(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(group)
 }
 
+// UpdateGroup godoc
+// @Summary      Update a group name
+// @Tags         groups
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id    path      string              true  "Group ID"
+// @Param        body  body      CreateGroupRequest  true  "New group name"
+// @Success      200   {object}  models.Group
+// @Failure      400   {string}  string  "invalid request"
+// @Failure      401   {string}  string  "unauthorized"
+// @Failure      404   {string}  string  "group not found"
+// @Failure      500   {string}  string  "internal error"
+// @Router       /api/groups/{id} [put]
 func (h *Handler) UpdateGroup(w http.ResponseWriter, r *http.Request) {
 
 	groupIDStr := r.PathValue("id")
@@ -134,6 +181,16 @@ func (h *Handler) UpdateGroup(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(updatedGroup)
 }
 
+// DeleteGroup godoc
+// @Summary      Delete a group
+// @Tags         groups
+// @Security     BearerAuth
+// @Param        id   path      string  true  "Group ID"
+// @Success      204
+// @Failure      400  {string}  string  "invalid group ID"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id} [delete]
 func (h *Handler) DeleteGroup(w http.ResponseWriter, r *http.Request) {
 
 	groupIDStr := r.PathValue("id")
@@ -151,6 +208,18 @@ func (h *Handler) DeleteGroup(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// AddMember godoc
+// @Summary      Add a member to a group
+// @Tags         groups
+// @Accept       json
+// @Security     BearerAuth
+// @Param        id    path      string            true  "Group ID"
+// @Param        body  body      AddMemberRequest  true  "User to add"
+// @Success      204
+// @Failure      400  {string}  string  "invalid request"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id}/members [post]
 func (h *Handler) AddMember(w http.ResponseWriter, r *http.Request) {
 
 	groupIDStr := r.PathValue("id")
@@ -180,6 +249,17 @@ func (h *Handler) AddMember(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// RemoveMember godoc
+// @Summary      Remove a member from a group
+// @Tags         groups
+// @Security     BearerAuth
+// @Param        id       path      string  true  "Group ID"
+// @Param        user_id  path      string  true  "User ID"
+// @Success      204
+// @Failure      400  {string}  string  "invalid ID"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id}/members/{user_id} [delete]
 func (h *Handler) RemoveMember(w http.ResponseWriter, r *http.Request) {
 
 	groupIDStr := r.PathValue("id")

@@ -29,6 +29,19 @@ type CreateExpenseRequest struct {
 	Splits      []SplitRequest `json:"splits"`
 }
 
+// CreateExpense godoc
+// @Summary      Create an expense in a group
+// @Tags         expenses
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id    path      string                true  "Group ID"
+// @Param        body  body      CreateExpenseRequest  true  "Expense data"
+// @Success      201   {object}  models.Expense
+// @Failure      400   {string}  string  "invalid request"
+// @Failure      401   {string}  string  "unauthorized"
+// @Failure      500   {string}  string  "internal error"
+// @Router       /api/groups/{id}/expenses [post]
 func (h *Handler) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
 	parsedID, err := uuid.Parse(userID)
@@ -92,6 +105,17 @@ func (h *Handler) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(expense)
 }
 
+// GetExpenses godoc
+// @Summary      List all expenses in a group
+// @Tags         expenses
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      string  true  "Group ID"
+// @Success      200  {array}   models.Expense
+// @Failure      400  {string}  string  "invalid group ID"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id}/expenses [get]
 func (h *Handler) GetExpenses(w http.ResponseWriter, r *http.Request) {
 	groupIDStr := r.PathValue("id")
 	groupID, err := uuid.Parse(groupIDStr)
@@ -114,6 +138,19 @@ func (h *Handler) GetExpenses(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(expenses)
 }
 
+// GetExpense godoc
+// @Summary      Get a single expense
+// @Tags         expenses
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id         path      string  true  "Group ID"
+// @Param        expenseId  path      string  true  "Expense ID"
+// @Success      200  {object}  models.Expense
+// @Failure      400  {string}  string  "invalid ID"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      404  {string}  string  "expense not found"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id}/expenses/{expenseId} [get]
 func (h *Handler) GetExpense(w http.ResponseWriter, r *http.Request) {
 	expenseIDStr := r.PathValue("expenseId")
 	expenseID, err := uuid.Parse(expenseIDStr)
@@ -137,6 +174,17 @@ func (h *Handler) GetExpense(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(expense)
 }
 
+// DeleteExpense godoc
+// @Summary      Delete an expense
+// @Tags         expenses
+// @Security     BearerAuth
+// @Param        id         path      string  true  "Group ID"
+// @Param        expenseId  path      string  true  "Expense ID"
+// @Success      204
+// @Failure      400  {string}  string  "invalid ID"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id}/expenses/{expenseId} [delete]
 func (h *Handler) DeleteExpense(w http.ResponseWriter, r *http.Request) {
 	expenseIDStr := r.PathValue("expenseId")
 	expenseID, err := uuid.Parse(expenseIDStr)
