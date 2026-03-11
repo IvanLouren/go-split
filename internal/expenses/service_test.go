@@ -203,6 +203,52 @@ func TestGetExpense(t *testing.T) {
 	}
 }
 
+func TestUpdateExpense(t *testing.T) {
+	var userID string
+	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
+		"User 5", "user5@test.com", "hashedpassword").Scan(&userID)
+	if err != nil {
+		t.Fatalf("failed to insert user: %s", err)
+	}
+
+	var groupID string
+	err = testDB.QueryRow(`INSERT INTO groups (name, created_by) VALUES ($1, $2) RETURNING id`,
+		"Trip to Rome", userID).Scan(&groupID)
+	if err != nil {
+		t.Fatalf("failed to insert group: %s", err)
+	}
+
+	parsedUserID, _ := uuid.Parse(userID)
+	parsedGroupID, _ := uuid.Parse(groupID)
+
+	service := expenses.NewService(testDB)
+	splits := []expenses.SplitInput{
+		{UserID: parsedUserID, Amount: 90.00},
+	}
+	expense, err := service.CreateExpense(parsedGroupID, parsedUserID, "Dinner", 90.00, splits)
+	if err != nil {
+		t.Fatalf("failed to create expense: %s", err)
+	}
+
+	updatedSplits := []expenses.SplitInput{
+		{UserID: parsedUserID, Amount: 50.00},
+	}
+	updated, err := service.UpdateExpense(expense.ID, "Lunch", 50.00, updatedSplits)
+	if err != nil {
+		t.Fatalf("failed to update expense: %s", err)
+	}
+
+	if updated.Description != "Lunch" {
+		t.Errorf("expected description 'Lunch', got %s", updated.Description)
+	}
+	if updated.Amount != 50.00 {
+		t.Errorf("expected amount 50, got %f", updated.Amount)
+	}
+	if updated.PaidBy != parsedUserID {
+		t.Errorf("expected paidBy to be unchanged, got %s", updated.PaidBy)
+	}
+}
+
 func TestDeleteExpense(t *testing.T) {
 	var userID string
 	err := testDB.QueryRow(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`,
