@@ -78,6 +78,7 @@ func main() {
 	mux.Handle("POST /api/groups/{id}/expenses", middleware.AuthRequired(http.HandlerFunc(expenseHandler.CreateExpense)))
 	mux.Handle("GET /api/groups/{id}/expenses", middleware.AuthRequired(http.HandlerFunc(expenseHandler.GetExpenses)))
 	mux.Handle("GET /api/groups/{id}/expenses/{expenseId}", middleware.AuthRequired(http.HandlerFunc(expenseHandler.GetExpense)))
+	mux.Handle("PUT /api/groups/{id}/expenses/{expenseId}", middleware.AuthRequired(http.HandlerFunc(expenseHandler.UpdateExpense)))
 	mux.Handle("DELETE /api/groups/{id}/expenses/{expenseId}", middleware.AuthRequired(http.HandlerFunc(expenseHandler.DeleteExpense)))
 
 	// settlement routes

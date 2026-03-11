@@ -521,6 +521,54 @@ paths:
       summary: Get a single expense
       tags:
       - expenses
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Group ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Expense ID
+        in: path
+        name: expenseId
+        required: true
+        type: string
+      - description: Updated expense data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/expenses.CreateExpenseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Expense'
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: expense not found
+          schema:
+            type: string
+        "500":
+          description: internal error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update an expense
+      tags:
+      - expenses
   /api/groups/{id}/members:
     post:
       consumes:

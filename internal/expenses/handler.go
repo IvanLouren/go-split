@@ -174,6 +174,80 @@ func (h *Handler) GetExpense(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(expense)
 }
 
+// UpdateExpense godoc
+// @Summary      Update an expense
+// @Tags         expenses
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id         path      string                true  "Group ID"
+// @Param        expenseId  path      string                true  "Expense ID"
+// @Param        body       body      CreateExpenseRequest  true  "Updated expense data"
+// @Success      200  {object}  models.Expense
+// @Failure      400  {string}  string  "invalid request"
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      404  {string}  string  "expense not found"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/groups/{id}/expenses/{expenseId} [put]
+func (h *Handler) UpdateExpense(w http.ResponseWriter, r *http.Request) {
+	expenseIDStr := r.PathValue("expenseId")
+	expenseID, err := uuid.Parse(expenseIDStr)
+	if err != nil {
+		http.Error(w, "invalid expense ID", http.StatusBadRequest)
+		return
+	}
+
+	var req CreateExpenseRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if req.Amount <= 0 {
+		http.Error(w, "amount must not be zero", http.StatusBadRequest)
+		return
+	}
+
+	if req.Description == "" {
+		http.Error(w, "description must not be empty", http.StatusBadRequest)
+		return
+	}
+
+	var splits []SplitInput
+	for _, s := range req.Splits {
+		splitUserID, err := uuid.Parse(s.UserID)
+		if err != nil {
+			http.Error(w, "invalid user ID in splits", http.StatusBadRequest)
+			return
+		}
+		splits = append(splits, SplitInput{UserID: splitUserID, Amount: s.Amount})
+	}
+
+	const epsilon = 0.01
+	var total float64
+	for _, s := range splits {
+		total += s.Amount
+	}
+	diff := total - req.Amount
+	if diff < -epsilon || diff > epsilon {
+		http.Error(w, "splits must add up to total amount", http.StatusBadRequest)
+		return
+	}
+
+	expense, err := h.service.UpdateExpense(expenseID, req.Description, req.Amount, splits)
+	if err == sql.ErrNoRows {
+		http.Error(w, "expense not found", http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(expense)
+}
+
 // DeleteExpense godoc
 // @Summary      Delete an expense
 // @Tags         expenses

@@ -77,6 +77,37 @@ func (s *Service) GetExpense(expenseID uuid.UUID) (models.Expense, error) {
 	return expense, nil
 }
 
+func (s *Service) UpdateExpense(expenseID uuid.UUID, description string, amount float64, splits []SplitInput) (models.Expense, error) {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return models.Expense{}, err
+	}
+	defer tx.Rollback()
+
+	var expense models.Expense
+	err = tx.QueryRow(
+		`UPDATE expenses SET description = $1, amount = $2 WHERE id = $3 RETURNING id, group_id, paid_by, description, amount, created_at`,
+		description, amount, expenseID,
+	).Scan(&expense.ID, &expense.GroupID, &expense.PaidBy, &expense.Description, &expense.Amount, &expense.CreatedAt)
+	if err != nil {
+		return models.Expense{}, err
+	}
+
+	_, err = tx.Exec(`DELETE FROM expense_splits WHERE expense_id = $1`, expenseID)
+	if err != nil {
+		return models.Expense{}, err
+	}
+
+	for _, split := range splits {
+		_, err = tx.Exec(`INSERT INTO expense_splits (expense_id, user_id, amount) VALUES ($1, $2, $3)`, expenseID, split.UserID, split.Amount)
+		if err != nil {
+			return models.Expense{}, err
+		}
+	}
+
+	return expense, tx.Commit()
+}
+
 func (s *Service) DeleteExpense(expenseID uuid.UUID) error {
 	tx, err := s.db.Begin()
 	if err != nil {
