@@ -110,6 +110,11 @@ definitions:
       paid_to:
         type: string
     type: object
+  users.UpdateMeRequest:
+    properties:
+      name:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -711,6 +716,70 @@ paths:
       summary: Record a settlement between two users
       tags:
       - settlements
+  /api/users/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: user not found
+          schema:
+            type: string
+        "500":
+          description: internal error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get current user profile
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Updated profile data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/users.UpdateMeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: user not found
+          schema:
+            type: string
+        "500":
+          description: internal error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update current user profile
+      tags:
+      - users
 securityDefinitions:
   BearerAuth:
     in: header

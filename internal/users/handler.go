@@ -21,6 +21,16 @@ type UpdateMeRequest struct {
 	Name string `json:"name"`
 }
 
+// GetMe godoc
+// @Summary      Get current user profile
+// @Tags         users
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  models.User
+// @Failure      401  {string}  string  "unauthorized"
+// @Failure      404  {string}  string  "user not found"
+// @Failure      500  {string}  string  "internal error"
+// @Router       /api/users/me [get]
 func (h *Handler) GetMe(w http.ResponseWriter, r *http.Request) {
 	userIDStr := middleware.GetUserID(r)
 	userID, err := uuid.Parse(userIDStr)
@@ -44,6 +54,19 @@ func (h *Handler) GetMe(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// UpdateMe godoc
+// @Summary      Update current user profile
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        body  body      UpdateMeRequest  true  "Updated profile data"
+// @Success      200   {object}  models.User
+// @Failure      400   {string}  string  "invalid request"
+// @Failure      401   {string}  string  "unauthorized"
+// @Failure      404   {string}  string  "user not found"
+// @Failure      500   {string}  string  "internal error"
+// @Router       /api/users/me [put]
 func (h *Handler) UpdateMe(w http.ResponseWriter, r *http.Request) {
 	userIDStr := middleware.GetUserID(r)
 	userID, err := uuid.Parse(userIDStr)
