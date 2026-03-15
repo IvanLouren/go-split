@@ -15,18 +15,20 @@ No Gin. No GORM.
 ## Features
 
 - User registration and login with JWT authentication
+- Current user profile (`GET /api/users/me`, `PUT /api/users/me`)
 - Create and manage groups
 - Add and remove group members
 - Record expenses with per-user splits
+- Update expenses
 - Record settlements between users
 - Calculate net balances per user in a group
+- Swagger docs (`/swagger/`)
 
 ## Project Structure
 
 ```
 cmd/
   main.go                  # Entry point
-internal/
 internal/
   auth/
     handler.go             # POST /api/auth/register, POST /api/auth/login
@@ -48,6 +50,10 @@ internal/
     handler.go             # GET /api/groups/{id}/balances
     service.go
     service_test.go        # TestGetBalances
+  users/
+    handler.go             # GET /api/users/me, PUT /api/users/me
+    service.go
+    service_test.go
 migrations/
   001_init.sql             # All 6 tables
 pkg/
@@ -115,6 +121,7 @@ DATABASE_URL=postgres://gosplit:yourpassword@localhost:5432/gosplit_db?sslmode=d
 | POST | `/api/groups/{id}/expenses` | Create an expense | ✅ |
 | GET | `/api/groups/{id}/expenses` | List expenses in a group | ✅ |
 | GET | `/api/groups/{id}/expenses/{expenseId}` | Get an expense | ✅ |
+| PUT | `/api/groups/{id}/expenses/{expenseId}` | Update an expense | ✅ |
 | DELETE | `/api/groups/{id}/expenses/{expenseId}` | Delete an expense | ✅ |
 
 ### Settlements
@@ -129,6 +136,13 @@ DATABASE_URL=postgres://gosplit:yourpassword@localhost:5432/gosplit_db?sslmode=d
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
 | GET | `/api/groups/{id}/balances` | Get net balances for all users in a group | ✅ |
+
+### Users
+
+| Method | Route | Description | Auth |
+|--------|-------|-------------|------|
+| GET | `/api/users/me` | Get current user profile | ✅ |
+| PUT | `/api/users/me` | Update current user profile | ✅ |
 
 ## Balance Calculation
 
@@ -166,4 +180,4 @@ You can also run tests for a single package, e.g.:
 go test ./internal/groups -v
 ```
 
-The test suites cover the service layer behaviour for `auth`, `groups`, `expenses`, `settlements` and `balances`.
+The test suites cover the service layer behaviour for `auth`, `groups`, `expenses`, `settlements`, `users` and `balances`.
